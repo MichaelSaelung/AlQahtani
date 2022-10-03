@@ -1,2 +1,10 @@
 #res/dataset/
 __pycache__/
+.ipynb_checkpoints/
+# exclude everything
+res/dataset/data/*
+
+# exception to the rule
+!res/dataset/data/.gitkeep
+
+*.ipynb
