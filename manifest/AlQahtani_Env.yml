@@ -1,0 +1,17 @@
+#install Using COnda
+name:
+  AlQahtani_Env
+channels:
+  - amaconda
+  #- conda-forge
+dependencies:
+  - python==3.9.7
+  - numpy==1.22.3
+  - matplotlib==3.5.2
+  - tensorflow==2.8.2
+  - nb_conda_karnels==2.3.1
+  - scikit-learn==1.0.2
+  - opnecv==4.6.0
+  - pip:
+    - sklearn==0.0
+    - opencv-contrib-python==4.5.5.62
