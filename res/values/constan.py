@@ -1,4 +1,7 @@
 
+from ast import Constant
+
+
 NO_IMAGES_FILE_NAME = 'No Images'
 NO_IMAGE_FILE_NAME  = 'No Image'
 IMAGE_TYPE          = '.jpg'
@@ -8,12 +11,21 @@ CROP_FILE_NAME      = 'Crop'
 TO_RGB              = 'RGB'
 
 IMAGE_SIZE = 64
-EPOCHS = 100
+EPOCHS = 5
 DATASET_PICKLE_NAME = 'dataset'
 TRAIN_TEST          = 'features_labels'
 LOSS_ACCURACY       = 'loss_accuracy'
 MODEL_SUMMARY       = 'model_summary'
-FLOAT_POINT = '{:.3}'
+FLOAT_POINT         = '{:.3}'
+
+DEFAULT_COORDINATE  = (176,137,443,340)
+
+CROP_COORDINATE = [
+        [1 ,  ( 176, 137, 443, 340  )],
+        [0 ,  ( 10 , 137, 443, 340  )],
+        [2 ,  ( 10 , 137, 443, 340  )]
+       ]
+
 
 class tab():
     tabMain        = 'Main'
@@ -25,14 +37,15 @@ class tab():
     hideFrameProfile     = True
 
 class label():
+
     COPY_RIGHT    = 'Copyright © 2022 Michael Saelung Sinambela'
-    accuracy      = 'akurasi        : {} %'
-    timeExecution = 'Waktu eksekusi : {} s'
+    accuracy      = f'akurasi        : {FLOAT_POINT} %'
+    timeExecution = f'Waktu eksekusi : {FLOAT_POINT} s'
     deviation     = 'Deviasi        : '
     maxDeviasion  = 'Max Preddict'
     minDeviasion  = 'Min Preddict'
     title         = 'Al Qahtani Clasification'
-    predictStatus = 'Estimate Status : '
+    predictStatus = 'Predict Status  : '
     loadStatus    = 'Path Status     : '
     cropStatus    = 'Crop Status     : '
     predict       = '0'
@@ -46,22 +59,23 @@ class label():
     selectArea    = 'Select Area'
 
 class buttonLabel():
-    LOAD_IMAGE     = 'Load Image'
-    CROP_IMAGE     = 'Crop'
-    SELECT_REGION  = 'Pilih Gigi'
-    PREDICT        = 'Predict'
-    RESET_IMAGE    = 'Reset'
-    BUILD_DATASET  = 'Build Datsets'
-    TRAIN_MODEL    = 'Train Models'
+    LOAD_IMAGE        = 'Load Image'
+    CROP_IMAGE        = 'Crop'
+    SELECT_REGION     = 'Pilih Gigi'
+    PREDICT           = 'Predict'
+    RESET_IMAGE       = 'Reset'
+    BUILD_DATASET     = 'Build Datsets'
+    TRAIN_MODEL       = 'Train Models'
+    DATABASE_GENERATE = 'Database Generate'
 
 class fontDecoration():
-    arial10bold = 'arial 10'
+    arial10bold = 'arial 8'
     arial07     = 'arial 7'
     arial40bold = 'arial 40 bold'
 
 class screen():
-    WIDTH      = 1000
-    HEIGHT     = 800
+    WIDTH      = 900
+    HEIGHT     = 700
 
     height_5p  = int(HEIGHT * 0.05)
     height_10p = int(HEIGHT * 0.1)
@@ -77,10 +91,10 @@ class screen():
     width_70p  = int(WIDTH * 0.7) 
 
 class message():
-    keterangan1  = 'Hasil prediksi region 1 \ndan region 2:'
+    keterangan1  = 'Hasil Umur Diantara {0} \ndan {1}'
     coorSelected = 'startX {0}, startY {1}),(endX {2}, endY {3}'
     coorTerminal = 'StartX = {0}, StartY = {1}, CurX = {2}, CurY = {3}'
-    test = 'umur {0}\numut {1}\numur {2}\numur {0}\numut {1}\numur {2}umur {0}\numut {1}\numur {2}\numur {0}\numut {1}\numur {2}'
+    allPredict   = 'Umur {1} = {0} \n'
     PROFILE      = """Nama         : Michael Saelung Sinambela
 Alamat       :
 Fakultas     :

@@ -1,5 +1,7 @@
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.callbacks import CSVLogger
+
 import matplotlib.pyplot as plt
 import pickle
 from sklearn.model_selection import train_test_split
@@ -38,7 +40,8 @@ def createModel(featureShape, classShape):
     
 def fitModel(X_train, y_train, X_test, y_test):
     model = load_model(f'{dir.MODEL_FOLDER}')
-    model.fit(X_train,y_train,epochs=constan.EPOCHS, verbose = 1, validation_data=(X_test, y_test))
+    csv_logger = CSVLogger(f'{dir.PICKLE_FOLDER}{constan.LOSS_ACCURACY}.csv')
+    model.fit(X_train,y_train,epochs=constan.EPOCHS, verbose = 1, validation_data=(X_test, y_test), callbacks=[csv_logger])
     if False:
         plt.plot(history.history['accuracy'], label='accuracy')
         plt.plot(history.history['val_accuracy'], label = 'val_accuracy')

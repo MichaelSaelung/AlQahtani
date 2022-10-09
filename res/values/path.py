@@ -12,3 +12,5 @@ MODEL_FOLDER    =os.path.normpath(path) + '/res/dataset/model' + '/'
 PICKLE_FOLDER   =os.path.normpath(path) + '/res/dataset/pickle' + '/'
 DRAWABLE_FOLDER =os.path.normpath(path) + '/res/drawable' + '/'
 VALUES_FOLDER   =os.path.normpath(path) + '/res/values' + '/'
+
+DATABASE_FOLDER =os.path.normpath(path) + '/database' + '/'

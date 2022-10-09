@@ -5,7 +5,7 @@ import os
 from PIL import Image, ImageTk
 
 from res.values import constan, path
-from src import imagePrediction as imgPredict, model as mdl, dataset as dst
+from src import imagePrediction as imgPredict, model as mdl, dataset as dst, databaseGenerate as dgt
 from res.values.constan import buttonLabel as btnLbl, message as msg, label as lbl, tab, fontDecoration as fd, screen as scr
 
 
@@ -19,7 +19,7 @@ v = IntVar()
 v.set(1)
 
 def updateStatus(lblStatus=None,     lblStatusCrop=None,     lblStatusPredict=None, 
-                 lblAccuracy = None, lblTimeExecution= None, lblPrediction=None, 
+                 lblAccuracy = None, lblTimeExecution= None, lblPrediction=None, lblKeterangan1=None,
                  buttonRestImg=None, buttonCropImg=None, buttonPrediksiImg=None):
 
     if lblStatus         is not None : lbl_status.config(        text = f'{lbl.loadStatus}{lblStatus}')
@@ -28,6 +28,7 @@ def updateStatus(lblStatus=None,     lblStatusCrop=None,     lblStatusPredict=No
     if lblAccuracy       is not None : lbl_accuracy.config(      text = lbl.accuracy.format(lblAccuracy))
     if lblTimeExecution  is not None : lbl_time_execution.config(text = lbl.timeExecution.format(lblTimeExecution))
     if lblPrediction     is not None : lbl_predict.config(       text = f'{lblPrediction}')
+    if lblKeterangan1    is not None : lbl_keterangan1.config(   text = f'{lblKeterangan1}')
 
     if buttonRestImg     is not None : btn_reset_image.config(   state = buttonRestImg)
     if buttonCropImg     is not None : btn_crop_image.config(    state = buttonCropImg)
@@ -61,11 +62,13 @@ def openImage(path):
         updateStatus(lblStatus=path,buttonRestImg='normal',buttonCropImg='normal',buttonPrediksiImg='disabled')
         selectAreaStop()
 
-def saveImage():
-    if   (start_x > curX and start_y > curY): coor = (curX, curY,start_x, start_y)  
-    elif (start_x > curX and start_y < curY): coor = (curX, start_y,start_x, curY)  
-    elif (start_x < curX and start_y > curY): coor = (start_x, curY,curX, start_y)  
-    else:                                     coor = (start_x, start_y, curX, curY)
+def saveImage(st=False):
+    if st : coor = constan.DEFAULT_COORDINATE
+    else:
+        if   (start_x > curX and start_y > curY): coor = (curX, curY,start_x, start_y)  
+        elif (start_x > curX and start_y < curY): coor = (curX, start_y,start_x, curY)  
+        elif (start_x < curX and start_y > curY): coor = (start_x, curY,curX, start_y)  
+        else:                                     coor = (start_x, start_y, curX, curY)
 
     cropImage = CropImageResize.crop(coor)
     startX, startY, endX, endY = coor
@@ -118,9 +121,12 @@ def hideInformationTab(event):
         elif event.keysym == 's':
             FrameAKaTI.pack()
             FrameAKa.add(FrameAKaTI, text=tab.tabInformation)
+        elif event.keysym == 'c':
+            saveImage(TRUE)    
+            updateCropImage()  
     except : pass
 
-def selectArea():
+def selectArea(): 
     Frameb.bind('<ButtonPress-1>', buttonPress)
     Frameb.bind('<B1-Motion>', buttonMove)
     Frameb.bind('<ButtonRelease-1>', buttonRelease)
@@ -136,12 +142,12 @@ def prediksi():
     root.config(cursor="watch")
     root.update()
 
-    agePrediction, timeExecution, accuracy, loss, PredictionClass = imgPredict.imagePrediction()
+    agePrediction, timeExecution, accuracy, loss, PredictionClass, firstFolder = imgPredict.imagePrediction()
     
     PredictionClass = PredictionClass[0]
     str =''
     for x in range(len(PredictionClass)):
-        str = str + 'Umur{1} = {0} \n'.format(constan.FLOAT_POINT.format(PredictionClass[x]*100), (6 + x))
+        str = str + msg.allPredict.format(constan.FLOAT_POINT.format(PredictionClass[x]*100), (firstFolder + x))
     allPred.config(text = str)
 
     countFiles, countCurDir = 0,0
@@ -152,9 +158,10 @@ def prediksi():
     min = f'{(agePrediction - constan.DEVIATION)}'
     max = f'{(agePrediction + constan.DEVIATION)}'
 
-    updateStatus(lblAccuracy= constan.FLOAT_POINT.format(accuracy * 100),
-                lblTimeExecution= constan.FLOAT_POINT.format(timeExecution / 1000),
-                lblStatusPredict=lbl.predictFinish,
+    updateStatus(lblAccuracy= (accuracy * 100),
+                lblTimeExecution= (timeExecution / 1000),
+                lblStatusPredict=lbl.predictFinish, 
+                lblKeterangan1= msg.keterangan1.format(min,max),
                 lblPrediction= agePrediction)
 
     root.config(cursor="")
@@ -172,6 +179,13 @@ def buildDataset():
     dst.loadDataset()
     dst.selectionFeature()
     root.config(cursor="")
+
+def databaseGenerate():
+    root.config(cursor="watch")
+    root.update()
+    dgt.generate()
+    root.config(cursor="")
+
 
 #-------------------------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------------------------
@@ -243,7 +257,7 @@ FrameAKaTUAKi = Frame(FrameAKaTUA,width= scr.width_25p, height= scr.height_15p)
 FrameAKaTUAKi.grid(row=0, column=0, sticky='nsew')
 FrameAKaTUAKi.grid_propagate(False)
 FrameAKaTUAKiA = Frame(FrameAKaTUAKi, width= 20)
-FrameAKaTUAKiA.grid(row=0, column=0, sticky='nsew', padx=30, pady=(20,2))
+FrameAKaTUAKiA.grid(row=0, column=0, sticky='nsew', padx=30, pady=(20,1))
 
 FrameAKaTUATe = Frame(FrameAKaTUA,width= scr.width_25p, height= scr.height_15p)
 FrameAKaTUATe.grid(row=0, column=1, sticky='nsew')
@@ -298,17 +312,17 @@ btn_reset_image.grid(row=0,column=1, sticky='nsew')
 btn_reset_image.config(state = 'disabled')
 
 btn_crop_image = Button(FrameAKaTUAKi, width= 20, text=btnLbl.CROP_IMAGE, font=fd.arial10bold, command = selectArea)
-btn_crop_image.grid(row=1,column=0,sticky='nsew', padx=30, pady=2)
+btn_crop_image.grid(row=1,column=0,sticky='nsew', padx=30, pady=1)
 btn_crop_image.config(state = 'disabled')
 btn_prediksi_image = Button(FrameAKaTUAKi, width= 20, text=btnLbl.PREDICT, font=fd.arial10bold, command = prediksi)
-btn_prediksi_image.grid(row=2,column=0,sticky='nsew', padx=30, pady=2)
+btn_prediksi_image.grid(row=2,column=0,sticky='nsew', padx=30, pady=1)
 btn_prediksi_image.config(state = 'disabled')
 #=======================================================================
 #   Membuat Label Pada Teb Menu
 #=======================================================================
-lbl_accuracy = Label(FrameAKaTUATe, text=lbl.accuracy.format(0), font=fd.arial10bold,highlightthickness=2)
+lbl_accuracy = Label(FrameAKaTUATe, text=lbl.accuracy.format(0.0), font=fd.arial10bold,highlightthickness=2)
 lbl_accuracy.grid(row=0, column=1, sticky=W, padx=5,pady=(20,1))
-lbl_time_execution= Label(FrameAKaTUATe, text=lbl.timeExecution.format(0), font=fd.arial10bold,highlightthickness=2)
+lbl_time_execution= Label(FrameAKaTUATe, text=lbl.timeExecution.format(0.0), font=fd.arial10bold,highlightthickness=2)
 lbl_time_execution.grid(row=1, column=1, sticky=W, padx=5,pady=1)
 lbl_deviation = Label(FrameAKaTUATe, text=lbl.deviation, font=fd.arial10bold,highlightthickness=2)
 lbl_deviation.grid(row=2, column=1, sticky=W, padx=5,pady=1)
@@ -333,17 +347,19 @@ lbl_copyright.grid(row=6, column=0, sticky=W, pady=5)
 #=======================================================================
 #   Membuat Label Pada Teb Informasi
 #=======================================================================
-buildDataset = Button(FrameAKaTIKiKi,  width=10, text=btnLbl.BUILD_DATASET, font=fd.arial10bold,command=buildDataset)
-buildDataset.grid(row=0, column=0, sticky=W, padx=30,pady=(20,2))
-trainModel = Button(FrameAKaTIKiKi,  width=10, text=btnLbl.TRAIN_MODEL, font=fd.arial10bold,command=trainModel)
-trainModel.grid(row=1, column=0, sticky=W, padx=30,pady=1)
+databaseGenerate = Button(FrameAKaTIKiKi,  width=15, text=btnLbl.DATABASE_GENERATE, font=fd.arial10bold,command=databaseGenerate)
+databaseGenerate.grid(row=0, column=0, sticky=W, padx=30,pady=(20,20))
+buildDataset = Button(FrameAKaTIKiKi,  width=15, text=btnLbl.BUILD_DATASET, font=fd.arial10bold,command=buildDataset)
+buildDataset.grid(row=1, column=0, sticky=W, padx=30,pady=1)
+trainModel = Button(FrameAKaTIKiKi,  width=15, text=btnLbl.TRAIN_MODEL, font=fd.arial10bold,command=trainModel)
+trainModel.grid(row=2, column=0, sticky=W, padx=30,pady=1)
 allPred = Label(FrameAKaTIKiKa,  width=20, text='', justify='left' ,font=fd.arial10bold)
 allPred.grid(row=1, column=2, sticky=W, padx=5,pady=(20,2))
 #=======================================================================
 #   Membuat Label Pada Teb Profile
 #=======================================================================
 lbl_profile = Label(FrameAKaTPKi, text=msg.PROFILE,justify='left', font=fd.arial10bold,highlightthickness=2)
-lbl_profile.grid(row=0, column=0, sticky=W, padx=30,pady=(20,2))
+lbl_profile.grid(row=0, column=0, sticky=W, padx=30,pady=(20))
 #=======================================================================
 #   Load 
 #=======================================================================
@@ -362,6 +378,7 @@ FrameAKa.forget(FrameAKaTI)
 
 root.bind('<Control-d>', hideInformationTab)
 root.bind('<Control-s>', hideInformationTab)
+root.bind('<Control-c>', hideInformationTab)
 root.eval('tk::PlaceWindow . center')
 root.resizable(False, False)
 root.mainloop()

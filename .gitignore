@@ -2,9 +2,11 @@
 __pycache__/
 .ipynb_checkpoints/
 # exclude everything
-res/dataset/data/*
+res/dataset/*
+database/*
 
 # exception to the rule
 !res/dataset/data/.gitkeep
+!database/.gitkeep
 
 src/trial.ipynb

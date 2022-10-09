@@ -35,7 +35,7 @@ def imagePrediction():
     except: print('Terjadi kesalahan Pada Saat Memprediksi Gambar.. ')
     timeExecution = (time.time() - start_time)
     
-    return agePrediction, timeExecution, accuracy, loss, np.asarray(arr_y_pred)
+    return agePrediction, timeExecution, accuracy, loss, np.asarray(arr_y_pred), class_array[0]
 
 
 #imagePrediction()
