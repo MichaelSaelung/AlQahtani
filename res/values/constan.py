@@ -1,7 +1,6 @@
 
 from ast import Constant
 
-
 NO_IMAGES_FILE_NAME = 'No Images'
 NO_IMAGE_FILE_NAME  = 'No Image'
 IMAGE_TYPE          = '.jpg'
@@ -10,11 +9,13 @@ DEVIATION           = 0.3 #Dalam Tahun
 CROP_FILE_NAME      = 'Crop'
 TO_RGB              = 'RGB'
 
-IMAGE_SIZE = 64
+IMAGE_SIZE = 128
+DIMENTION = 3
 EPOCHS = 5
 DATASET_PICKLE_NAME = 'dataset'
 TRAIN_TEST          = 'features_labels'
 LOSS_ACCURACY       = 'loss_accuracy'
+YTRUE_YPRED         = 'Ytrue_YPred'
 MODEL_SUMMARY       = 'model_summary'
 FLOAT_POINT         = '{:.3}'
 
@@ -26,6 +27,15 @@ CROP_COORDINATE = [
         [2 ,  ( 10 , 137, 443, 340  )]
        ]
 
+class modelName():
+    model0 = ''
+    model1 = 'EPOCHS5_IMGSIZE64.h5'
+    model2 = 'EPOCHS5_IMGSIZE128.h5'
+    model3 = 'EPOCHS10_IMGSIZE64.h5'
+    model4 = 'EPOCHS10_IMGSIZE128.h5'
+    model5 = 'EPOCHS5_IMGSIZE256.h5'
+
+MODEL_FILE_NAME = modelName.model0
 
 class tab():
     tabMain        = 'Main'

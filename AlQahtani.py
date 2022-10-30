@@ -1,14 +1,20 @@
-
+import test as t
 from tkinter import *
-from tkinter import ttk, filedialog, messagebox
-import os
+from tkinter import filedialog, ttk
+
 from PIL import Image, ImageTk
 
 from res.values import constan, path
-from src import imagePrediction as imgPredict, model as mdl, dataset as dst, databaseGenerate as dgt
-from res.values.constan import buttonLabel as btnLbl, message as msg, label as lbl, tab, fontDecoration as fd, screen as scr
-
-
+from res.values.constan import buttonLabel as btnLbl
+from res.values.constan import fontDecoration as fd
+from res.values.constan import label as lbl
+from res.values.constan import message as msg
+from res.values.constan import screen as scr
+from res.values.constan import tab
+from src import databaseGenerate as dgt
+from src import dataset as dst
+from src import imagePrediction as imgPredict
+from src import model as mdl
 
 WIDTH, HEIGHT = scr.WIDTH, scr.HEIGHT
 
@@ -114,7 +120,7 @@ def buttonRelease(event):
     Frameb.delete(rect)
     updateCropImage()    
 
-def hideInformationTab(event):
+def ctrlName(event):
     try:
         if event.keysym == 'd':
             FrameAKa.forget(FrameAKaTI)
@@ -123,7 +129,14 @@ def hideInformationTab(event):
             FrameAKa.add(FrameAKaTI, text=tab.tabInformation)
         elif event.keysym == 'c':
             saveImage(TRUE)    
-            updateCropImage()  
+            updateCropImage()         
+        elif event.keysym == 'p':
+            root.config(cursor="watch")
+            root.update()
+            #imgPredict.test()
+            openNewWindow()
+            root.config(cursor="")
+
     except : pass
 
 def selectArea(): 
@@ -150,11 +163,6 @@ def prediksi():
         str = str + msg.allPredict.format(constan.FLOAT_POINT.format(PredictionClass[x]*100), (firstFolder + x))
     allPred.config(text = str)
 
-    countFiles, countCurDir = 0,0
-    for root_dir, cur_dir, files in os.walk(path.DATA_FOLDER):
-        countFiles += len(files)
-        countCurDir += len(cur_dir)
-
     min = f'{(agePrediction - constan.DEVIATION)}'
     max = f'{(agePrediction + constan.DEVIATION)}'
 
@@ -172,12 +180,10 @@ def trainModel():
     mdl.executeModels()
     root.config(cursor="")
 
-
 def buildDataset():
     root.config(cursor="watch")
     root.update()
     dst.loadDataset()
-    dst.selectionFeature()
     root.config(cursor="")
 
 def databaseGenerate():
@@ -186,6 +192,9 @@ def databaseGenerate():
     dgt.generate()
     root.config(cursor="")
 
+def openNewWindow():
+     
+    t.abc(root)
 
 #-------------------------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------------------------
@@ -206,7 +215,8 @@ Frameb = Canvas(root, bg='white', width= WIDTH, height= scr.height_70p, highligh
 Frameb.grid(row=1, column=0, sticky='nsew')
 Frameb.grid_propagate(False)
 #=======================================================================
-#   Membuat Frame sebelah atas kanan untuk membuat tab frame 
+#   Membuat Frame sebelah atas kanan untuk mem
+# buat tab frame 
 #   FrameAKa = Frame Atas Kanan 
 #   Membuat Frame yang atas sebelah kiri kotak gambar crop 
 #   FrameAKi = Frame Atas Kiri
@@ -376,9 +386,10 @@ FrameAKi.create_image(scr.width_30p/2,scr.height_30p/2,anchor=CENTER, image=imgs
 
 FrameAKa.forget(FrameAKaTI)
 
-root.bind('<Control-d>', hideInformationTab)
-root.bind('<Control-s>', hideInformationTab)
-root.bind('<Control-c>', hideInformationTab)
+root.bind('<Control-d>', ctrlName)
+root.bind('<Control-s>', ctrlName)
+root.bind('<Control-c>', ctrlName)
+root.bind('<Control-p>', ctrlName)
 root.eval('tk::PlaceWindow . center')
 root.resizable(False, False)
 root.mainloop()

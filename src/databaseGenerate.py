@@ -1,9 +1,12 @@
 
 import os
-from res.values.constan import screen as scr
+from os import path, walk
+
 from PIL import Image
-from res.values import constan, path as dir
-from os import walk,path
+
+from res.values import constan
+from res.values import path as dir
+from res.values.constan import screen as scr
 
 FILE_NAME = 'coor{0}-{1}-umur{2}{3}'
 
